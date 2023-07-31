@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
-namespace APIVersionControl.Controllers.V1
+namespace APIVersionControl.Controllers.V2
 {
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersControllersV2 : ControllerBase
     {
         private const string ApiTestURL = "https://dummyapi.io/data/v1/";
 
@@ -16,13 +16,12 @@ namespace APIVersionControl.Controllers.V1
 
         public readonly HttpClient _httpClient;
 
-        public UsersController(HttpClient httpClient)
+        public UsersControllersV2(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-
-        [MapToApiVersion("1.0")]
+        [MapToApiVersion("2.0")]
         [HttpGet(Name = "GetUserData")]
         public async Task<IActionResult> GetUserDataAsync()
         {
@@ -31,12 +30,12 @@ namespace APIVersionControl.Controllers.V1
 
             var response = await _httpClient.GetStreamAsync(ApiTestURL);
             var userData = await JsonSerializer.DeserializeAsync<UserResponseData>(response);
-            return Ok(userData);
+
+            var users = userData?.data;
+
+
+            return Ok(users);
         }
 
-
     }
-
-
-
 }
